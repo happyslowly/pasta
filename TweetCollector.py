@@ -55,7 +55,7 @@ class TweetCollector(object):
             
             if max_id == 0 or max_id > _tweet['id']: max_id = _tweet['id']
 
-            tweet = Tweet(_tweet['id'], dateutil.parser.parse(_tweet['created_at']), self.clean(_tweet['text']))
+            tweet = Tweet(str(_tweet['id']), dateutil.parser.parse(_tweet['created_at']), self.clean(_tweet['text']))
             self.count = self.count + 1
             tweet.save()
         
