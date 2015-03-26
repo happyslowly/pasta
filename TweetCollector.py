@@ -9,7 +9,7 @@ logger = logging.getLogger('TweetCollector')
 class TweetCollector(object):
     def __init__(self):
         self.count = 0
-        self.auth = twitter.oauth.OAuth(config.twitter_oauth_token, config.twitter_oauth_secret,
+        self.auth = twitter.OAuth(config.twitter_oauth_token, config.twitter_oauth_secret,
                                   config.twitter_oauth_custkey, config.twitter_oauth_custsecret)
         logger.info('Connecting to twitter api')
         self.api = twitter.Twitter(auth=self.auth)
@@ -30,7 +30,7 @@ class TweetCollector(object):
 
     def query_tweets(self, query):
         logger.info('Searching: %s' % query)
-        search_results = self.api.search(q=query)
+        search_results = self.api.search.tweets(q=query, count=100)
         statuses = search_results['statuses']
 
         for tweet in statuses:
