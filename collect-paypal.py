@@ -8,6 +8,7 @@ import argcomplete
 import sys
 import time
 import logging
+import urllib
 
 from conf import config
 from TweetCollector import TweetCollector
@@ -19,9 +20,8 @@ args = parser.parse_args()
 
 argcomplete.autocomplete(parser)
 
-
 try:
-    query = 'paypal'
+    query = '+OR+'.join([urllib.quote(kw, '') for kw in config.keywords])
     c = TweetCollector()
     c.run(query)
 

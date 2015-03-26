@@ -18,7 +18,7 @@ class TweetCollector(object):
         self.api = twitter.Twitter(auth=self.auth)
 
 
-    def run(self, query, wait=30):
+    def run(self, query, wait=10):
         sequence = 0
         while True:
             try:
