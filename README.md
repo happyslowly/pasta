@@ -3,4 +3,4 @@
 
 * Summary of set up
     
-    pip install argcomplete dateutils nltk oauthlib pymongo twitter
+            pip install argcomplete dateutils nltk oauthlib pymongo twitter
