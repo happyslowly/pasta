@@ -1,10 +1,25 @@
 $(function () {
+    var chart;
+
     $.get("/tweets", function(data) {
-        console.log(data);
+      var posSeries;
+      var negSeries;
+
+      $.each(data, function(index, value)) {
+        if (data.sentimental == 'pos') {
+          posSeries
+        }
+      });
+
+      chart.series[0].set([[100, -0.25],[100, -0.5],[100, -.75],[100, -1.0],[200, -0.25],[200, -0.50],[200, -0.75]]);
+
     });
-    /*
-    $('#chart').highcharts({
+
+
+    $(document).ready(function() {
+      chart = new Highcharts.Chart({
         chart: {
+            renderTo: 'chart',
             type: 'scatter',
             zoomType: 'xy'
         },
@@ -69,7 +84,7 @@ $(function () {
         series: [{
             name: 'Negative',
             color: 'rgba(223, 83, 83, 0.5)',
-            data: [[100, -0.25],[100, -0.5],[100, -.75],[100, -1.0],[200, -0.25],[200, -0.50],[200, -0.75]]
+            data: []
 
         }, {
             name: 'Positive',
@@ -77,5 +92,6 @@ $(function () {
             data: [[100, 0.25],[100, .50],[100, .75],[200,0.25],[200,0.5]]
         }]
     });
-    */
+  });
+
 });
