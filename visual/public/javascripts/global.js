@@ -1,4 +1,8 @@
 $(function () {
+    $.get("/tweets", function(data) {
+        console.log(data);
+    });
+    /*
     $('#chart').highcharts({
         chart: {
             type: 'scatter',
@@ -80,4 +84,5 @@ $(function () {
             data: [[100, 0.25],[100, .50],[100, .75],[200,0.25],[200,0.5]]
         }]
     });
+    */
 });

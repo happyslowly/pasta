@@ -38,10 +38,12 @@ class TweetCollector(object):
     def query_tweets(self, query, sequence=0):
         logger.info('Searching: %s' % query)
         max_id = 0
+        since_id = 0
         if sequence == 0:
             search_results = self.api.search.tweets(q=query, count=100, result_type='recent')
         else:
-            search_results = self.api.search.tweets(q=query, count=100, max_id=max_id-1)
+            #search_results = self.api.search.tweets(q=query, count=100, max_id=max_id-1)
+            search_results = self.api.search.tweets(q=query, count=100, since_id=since_id)
 
         statuses = search_results['statuses']
 
@@ -54,6 +56,7 @@ class TweetCollector(object):
                 continue
             
             if max_id == 0 or max_id > _tweet['id']: max_id = _tweet['id']
+            if since_id == 0 or since_id < _tweet['id']: since_id = _tweet['id']
 
             tweet = Tweet(str(_tweet['id']), dateutil.parser.parse(_tweet['created_at']), self.clean(_tweet['text']))
             self.count = self.count + 1
