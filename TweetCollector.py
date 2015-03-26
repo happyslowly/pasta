@@ -57,7 +57,7 @@ class TweetCollector(object):
 
             tweet = Tweet(_tweet['id'], dateutil.parser.parse(_tweet['created_at']), self.clean(_tweet['text']))
             self.count = self.count + 1
-            tweet.dump()
+            tweet.save()
         
 
     
