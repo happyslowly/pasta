@@ -3,21 +3,25 @@ $(function () {
 
     $.get("/tweets", function(data) {
       var posSeries = new Array();
-      var negSeries;
+      var negSeries = new Array();
       var step = .25;
+
+      console.log(data);
 
       $.each(data, function(index, value) {
         if (value['sentimental'] == 'pos') {
-          posSeries.push([value['created_ts'], step]);
+          var point = {
+            y: step,
+            text: value['content']
+          };
+          posSeries.push(point);
         }
-        if (value['sentimental'] == 'neg') {
+        if (value['sentimental'] == 'pos') {
           negSeries.push([value['created_ts'], step]);
         }
       });
 
-      console.log(posSeries);
-
-      chart.series[0].setData(negSeries);
+      //chart.series[0].setData(negSeries);
       chart.series[1].setData(posSeries);
 
     });
@@ -84,7 +88,7 @@ $(function () {
                 },
                 tooltip: {
                     headerFormat: '<b>{series.name}</b><br>',
-                    pointFormat: '{point.x} cm, {point.y} kg'
+                    pointFormat: '{point.text}'
                 }
             }
         },
@@ -96,7 +100,7 @@ $(function () {
         }, {
             name: 'Positive',
             color: 'rgba(80, 180, 80, 0.5)',
-            data: [[100, 0.25],[100, .50],[100, .75],[200,0.25],[200,0.5]]
+            data: []
         }]
     });
   });

@@ -10,6 +10,7 @@ class Tweet:
         self.id = id
         self.content = content
         self.created_ts = str(created_ts.now())
+        self.rollup_ts = created_ts
         self.sentimental = sentimental
 
     

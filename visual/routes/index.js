@@ -24,7 +24,16 @@ router.get('/', function(req, res, next) {
 /* GET tweets */
 router.get('/tweets', function(req, res, next) {
   Tweet.find({}, function(err, docs) {
-    res.json(docs);
+    result = new Array();
+
+    for (var i = 0; i < docs.length; i++) {
+      result.push({
+        content: docs[i].content,
+        created_ts: docs[i].created_ts,
+        sentimental: docs[i].sentimental
+      })
+    }
+    res.json(result);
   });
 });
 
