@@ -2,16 +2,23 @@ $(function () {
     var chart;
 
     $.get("/tweets", function(data) {
-      var posSeries;
+      var posSeries = new Array();
       var negSeries;
+      var step = .25;
 
-      $.each(data, function(index, value)) {
-        if (data.sentimental == 'pos') {
-          posSeries
+      $.each(data, function(index, value) {
+        if (value['sentimental'] == 'pos') {
+          posSeries.push([value['created_ts'], step]);
+        }
+        if (value['sentimental'] == 'neg') {
+          negSeries.push([value['created_ts'], step]);
         }
       });
 
-      chart.series[0].set([[100, -0.25],[100, -0.5],[100, -.75],[100, -1.0],[200, -0.25],[200, -0.50],[200, -0.75]]);
+      console.log(posSeries);
+
+      chart.series[0].setData(negSeries);
+      chart.series[1].setData(posSeries);
 
     });
 
