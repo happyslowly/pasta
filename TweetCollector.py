@@ -1,8 +1,11 @@
 import logging
 import time
+import re
 import twitter
+import dateutil.parser
 
 from conf import config
+from Tweet import Tweet
 
 logger = logging.getLogger('TweetCollector')
 
@@ -16,9 +19,13 @@ class TweetCollector(object):
 
 
     def run(self, query, wait=30):
+        sequence = 0
         while True:
             try:
                 self.query_tweets(query)
+                sequence = sequence + 1
+                logger.info('%d tweets collected', self.count)
+                time.sleep(wait)
             except twitter.TwitterHTTPError, e:
                 logger.warn(e.message)
                 time.sleep(wait)
@@ -28,24 +35,34 @@ class TweetCollector(object):
                 time.sleep(wait)
 
 
-    def query_tweets(self, query):
+    def query_tweets(self, query, sequence=0):
         logger.info('Searching: %s' % query)
-        search_results = self.api.search.tweets(q=query, count=100)
+        max_id = 0
+        if sequence == 0:
+            search_results = self.api.search.tweets(q=query, count=100, result_type='recent')
+        else:
+            search_results = self.api.search.tweets(q=query, count=100, max_id=max_id-1)
+
         statuses = search_results['statuses']
 
-        for tweet in statuses:
-            print tweet
+        for _tweet in statuses:
 
-            if tweet.get('timeout', False):
+            if _tweet.get('timeout', False):
                 raise TweetCollectorTimeoutException('Timeout')
 
-            if not self.is_tweet_valid(tweet):
+            if not self.is_tweet_valid(_tweet):
                 continue
+            
+            if max_id == 0 or max_id > _tweet['id']: max_id = _tweet['id']
 
-            print tweet['text']
+            tweet = Tweet(_tweet['id'], dateutil.parser.parse(_tweet['created_at']), self.clean(_tweet['text']))
+            self.count = self.count + 1
+            tweet.dump()
+        
 
-            if not self.count % 100:
-                logger.info('Done with %d tweets out of %d' % (self.count, self.total_target))
+    
+    def clean(self, content):
+        return re.sub(r'http(s)*://\S+', '', content.replace('\n', ' '))
 
 
     def is_tweet_valid(self, tweet):
@@ -60,11 +77,6 @@ class TweetCollector(object):
 
         if not 'text' in tweet or tweet['text'].startswith('RT'):
             logger.debug('RE-Tweet found - skipping')
-            return False
-
-        folded_text = TwitterMixin.word_map(tweet['text']).split()
-        if '__h__' in folded_text and '__s__' in folded_text:
-            logger.debug('Tweet with double emoicons found - skipping')
             return False
 
         return True

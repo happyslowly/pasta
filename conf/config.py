@@ -7,4 +7,4 @@ twitter_oauth_custsecret = "j2Cocte79yR8dbWbK96v6HyHelOqyW3r0VJp5ncEBJuiVhkmDN"
 
 keywords = []
 
-logging.basicConfig(level=logging.DEBUG, format='%(name)s: %(levelname)s %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(name)s: %(levelname)s %(message)s')
