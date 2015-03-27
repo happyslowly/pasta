@@ -23,14 +23,16 @@ router.get('/', function(req, res, next) {
 
 /* GET tweets */
 router.get('/tweets', function(req, res, next) {
-  var since_id = req.query.since_id;
-  console.log(req.query);
-  console.log(since_id);
+  var offset = req.query.offset * 1000 * 60;
+  var currentTs = new Date().getTime() - 7 * 60 * 60 * 1000;
   Tweet.find({}, function(err, docs) {
     result = new Array();
 
     for (var i = 0; i < docs.length; i++) {
-      if (docs[i].id > since_id) {
+      var plot_ts = normalizeTs(docs[i].created_ts);
+      console.log(currentTs);
+      console.log(plot_ts);
+      if (currentTs - plot_ts <= offset) {
         result.push({
           id: docs[i].id,
           content: docs[i].content,

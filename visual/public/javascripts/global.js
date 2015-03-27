@@ -1,22 +1,20 @@
-var since_id = 0;
+var offset = 10;
 var chart;
+var keep = 1 * 10 * 1000;
 
-var posSeries = new Array();
-var negSeries = new Array();
 
 window.setInterval(getTweets, 10000);
 
 function getTweets() {
-    $.get("/tweets?since_id=" + since_id, function(data) {
+    $.get("/tweets?offset=" + offset, function(data) {
+      var posSeries = new Array();
+      var negSeries = new Array();
+
       var step = .25;
-      var posLastTs, negLastTs, posY, negY;
+      var posLastTs, negLastTs, posY, negY
 
       $.each(data, function(index, value) {
         //console.log(value);
-
-        if (since_id < value['id']) {
-          since_id = value['id'];
-        }
 
         if (value['sentiment'] == 'pos') {
           if (posLastTs != value['plot_ts']) {
@@ -54,9 +52,6 @@ function getTweets() {
           negSeries.push(point);
         }
       });
-
-      console.log(since_id);
-      //console.log(negSeries);
 
       chart.series[0].setData(negSeries);
       chart.series[1].setData(posSeries);
