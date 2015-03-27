@@ -5,21 +5,32 @@ $(function () {
       var posSeries = new Array();
       var negSeries = new Array();
       var step = .25;
-
-      console.log(data);
+      var lastTs, posY;
 
       $.each(data, function(index, value) {
         if (value['sentimental'] == 'pos') {
+          if (lastTs != value['plot_ts']) {
+            posY = step;
+          } else {
+            posY += step;
+          }
+
+          lastTs = value['plot_ts'];
+
           var point = {
-            y: step,
+            x: value['plot_ts'],
+            y: posY,
+            ts: value['created_ts'],
             text: value['content']
           };
           posSeries.push(point);
         }
         if (value['sentimental'] == 'pos') {
-          negSeries.push([value['created_ts'], step]);
+          negSeries.push([value['plot_ts'], step]);
         }
       });
+
+      console.log(posSeries);
 
       //chart.series[0].setData(negSeries);
       chart.series[1].setData(posSeries);
@@ -32,7 +43,6 @@ $(function () {
         chart: {
             renderTo: 'chart',
             type: 'scatter',
-            zoomType: 'xy'
         },
         title: {
             text: 'PayPal Sentiments'
@@ -46,6 +56,7 @@ $(function () {
             crossing:0,
             opposite:true,
             tickLength : 2,
+            type: 'datetime',
             labels:
             {
               enabled: false
@@ -57,21 +68,21 @@ $(function () {
             gridLineWidth: 0,
             labels: {
                 formatter: function () {
-                    if(this.value == 1)
+                    if(this.value == 10)
                         return 'Positive';
-                    if(this.value == -1)
+                    if(this.value == -10)
                         return 'Negative';
                 }
             },
             title: {
-                text: 'Sentiment)'
+                text: 'Sentiment'
             }
         },
 
         plotOptions: {
             scatter: {
                 marker: {
-                    radius: 11,
+                    radius: 10,
                     states: {
                         hover: {
                             enabled: true,
@@ -88,19 +99,26 @@ $(function () {
                 },
                 tooltip: {
                     headerFormat: '<b>{series.name}</b><br>',
-                    pointFormat: '{point.text}'
+                    pointFormat: '{point.ts} {point.text}'
                 }
+            },
+            series: {
+              //pointStart: Date.UTC(2015, 2, 26),
+              pointInterval: 1000
             }
+
         },
         series: [{
             name: 'Negative',
             color: 'rgba(223, 83, 83, 0.5)',
-            data: []
+            data: [],
+            marker: { symbol: 'circle'}
 
         }, {
             name: 'Positive',
             color: 'rgba(80, 180, 80, 0.5)',
-            data: []
+            data: [],
+            marker: { symbol: 'circle'}
         }]
     });
   });

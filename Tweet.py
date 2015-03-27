@@ -23,7 +23,7 @@ class Tweet:
         #print sentimental
         if sentimental is None or sentimental != self.sentimental:
             self.dump()
-            #collection.insert(self.__dict__)
+            collection.insert(self.__dict__)
 
 
 
