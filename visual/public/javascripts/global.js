@@ -1,21 +1,31 @@
-$(function () {
-    var chart;
+var since_id = 0;
+var chart;
 
-    $.get("/tweets", function(data) {
-      var posSeries = new Array();
-      var negSeries = new Array();
+var posSeries = new Array();
+var negSeries = new Array();
+
+window.setInterval(getTweets, 10000);
+
+function getTweets() {
+    $.get("/tweets?since_id=" + since_id, function(data) {
       var step = .25;
-      var lastTs, posY;
+      var posLastTs, negLastTs, posY, negY;
 
       $.each(data, function(index, value) {
-        if (value['sentimental'] == 'pos') {
-          if (lastTs != value['plot_ts']) {
+        //console.log(value);
+
+        if (since_id < value['id']) {
+          since_id = value['id'];
+        }
+
+        if (value['sentiment'] == 'pos') {
+          if (posLastTs != value['plot_ts']) {
             posY = step;
           } else {
             posY += step;
           }
 
-          lastTs = value['plot_ts'];
+          posLastTs = value['plot_ts'];
 
           var point = {
             x: value['plot_ts'],
@@ -25,18 +35,42 @@ $(function () {
           };
           posSeries.push(point);
         }
-        if (value['sentimental'] == 'pos') {
-          negSeries.push([value['plot_ts'], step]);
+
+        if (value['sentiment'] == 'neg') {
+          if (negLastTs != value['plot_ts']) {
+            negY = -1 * step;
+          } else {
+            negY -= step;
+          }
+
+          negLastTs = value['plot_ts'];
+
+          var point = {
+            x: value['plot_ts'],
+            y: negY,
+            ts: value['created_ts'],
+            text: value['content']
+          };
+          negSeries.push(point);
         }
       });
 
-      console.log(posSeries);
+      console.log(since_id);
+      //console.log(negSeries);
 
-      //chart.series[0].setData(negSeries);
+      chart.series[0].setData(negSeries);
       chart.series[1].setData(posSeries);
 
-    });
+      //console.log(negSeries);
 
+      chart.redraw();
+
+    });
+}
+
+$(function () {
+
+    getTweets();
 
     $(document).ready(function() {
       chart = new Highcharts.Chart({
@@ -51,6 +85,7 @@ $(function () {
             text: 'Source: Real time twitter feed'
         },
         xAxis: {
+            reversed: true,
             lineColor: 'black',
             lineWidth: 2,
             crossing:0,
@@ -68,15 +103,17 @@ $(function () {
             gridLineWidth: 0,
             labels: {
                 formatter: function () {
-                    if(this.value == 10)
+                    if(this.value == 1)
                         return 'Positive';
-                    if(this.value == -10)
+                    if(this.value == -1)
                         return 'Negative';
                 }
             },
             title: {
                 text: 'Sentiment'
-            }
+            },
+            min: -2,
+            max: 2
         },
 
         plotOptions: {
@@ -103,7 +140,7 @@ $(function () {
                 }
             },
             series: {
-              //pointStart: Date.UTC(2015, 2, 26),
+              pointStart: Date.UTC(new Date().getTime()),
               pointInterval: 1000
             }
 

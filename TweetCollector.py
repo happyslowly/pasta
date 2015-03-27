@@ -4,6 +4,7 @@ import re
 import twitter
 import dateutil.parser
 
+import sa
 from conf import config
 from Tweet import Tweet
 
@@ -58,7 +59,8 @@ class TweetCollector(object):
             if max_id == 0 or max_id > _tweet['id']: max_id = _tweet['id']
             if since_id == 0 or since_id < _tweet['id']: since_id = _tweet['id']
 
-            tweet = Tweet(str(_tweet['id']), dateutil.parser.parse(_tweet['created_at']), self.clean(_tweet['text']))
+            tweet = Tweet(str(_tweet['id']), dateutil.parser.parse(_tweet['created_at']),
+                          self.clean(_tweet['text']), sa.get_sentiment(_tweet['text']))
             self.count = self.count + 1
             tweet.save()
         

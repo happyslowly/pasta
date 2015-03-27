@@ -12,7 +12,7 @@ var tweetSchema = new mongoose.Schema({
   id: String,
   created_ts: String,
   content: String,
-  sentimental: String
+  sentiment: String
 });
 var Tweet = mongoose.model('tweets', tweetSchema);
 
@@ -23,16 +23,22 @@ router.get('/', function(req, res, next) {
 
 /* GET tweets */
 router.get('/tweets', function(req, res, next) {
+  var since_id = req.query.since_id;
+  console.log(req.query);
+  console.log(since_id);
   Tweet.find({}, function(err, docs) {
     result = new Array();
 
     for (var i = 0; i < docs.length; i++) {
-      result.push({
-        content: docs[i].content,
-        plot_ts: normalizeTs(docs[i].created_ts),
-        created_ts: docs[i].created_ts,
-        sentimental: docs[i].sentimental
-      })
+      if (docs[i].id > since_id) {
+        result.push({
+          id: docs[i].id,
+          content: docs[i].content,
+          plot_ts: normalizeTs(docs[i].created_ts),
+          created_ts: docs[i].created_ts,
+          sentiment: docs[i].sentiment
+        });
+      }
     }
     res.json(result);
   });
@@ -55,7 +61,6 @@ function normalizeTs(ts) {
   }
   */
 
-  console.log(Date.UTC(year, month - 1, day, hour, minutes, seconds, 0));
   return Date.UTC(year, month - 1, day, hour, minutes, seconds, 0);
 
 }
