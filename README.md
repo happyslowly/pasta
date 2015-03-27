@@ -1,6 +1,8 @@
 # Pasta #
-## PayPal Sentimental Analysis ##
+## PayPal Sentimental Analysis Base on Twitter##
 
-* Summary of set up
-    
-            pip install argcomplete dateutils nltk oauthlib pymongo twitter
+## Technology Stack ##
+* Twitter Python API
+* MongoDB
+* Nodejs, Express
+* HighCharts
