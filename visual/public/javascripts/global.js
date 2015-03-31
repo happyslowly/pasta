@@ -14,7 +14,7 @@ function normalizeTimeStamp(unixTs) {
   var date = new Date(unixTs - tzOffset);
   return date.getFullYear() + '/' +
     appendZero(date.getMonth() + 1) + '/' +
-    appendZero(date.getDate() + 1) + ' ' +
+    appendZero(date.getDate()) + ' ' +
     appendZero(date.getHours()) + ':' + 
     appendZero(date.getMinutes()) + ':' + 
     appendZero(date.getSeconds());
