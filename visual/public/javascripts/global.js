@@ -6,6 +6,10 @@ var tzOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 window.setInterval(getTweets, refreshRate);
 
+function getIframeHtml(url) {
+  return '<iframe border=0 frameborder=0 height=250 width=550 src="http://twitframe.com/show?url=' + url + '"></iframe>'
+}
+
 function appendZero(number) {
   return ((number < 10) ? '0' : '') + number.toString();
 }
@@ -44,7 +48,8 @@ function getTweets() {
             x: value['created_ts'],
             y: posY,
             ts: normalizeTimeStamp(value['created_ts']),
-            text: value['content']
+            text: value['content'],
+            url: value['url'],
           };
           posSeries.push(point);
         }
@@ -62,7 +67,8 @@ function getTweets() {
             x: value['created_ts'],
             y: negY,
             ts: normalizeTimeStamp(value['created_ts']),
-            text: value['content']
+            text: value['content'],
+            url: value['url']
           };
           negSeries.push(point);
         }
@@ -154,9 +160,23 @@ $(function () {
             },
             series: {
               pointStart: Date.UTC(new Date().getTime()),
-              pointInterval: 1000
-            }
-
+              pointInterval: 1000,
+              point: {
+                events: {
+                  click: function(e) {
+                    hs.htmlExpand(null, {
+                      pageOrigin: {
+                        x: e.pageX || e.clientX,
+                        y: e.pageY || e.clientY
+                      },
+                      headingText: 'Tweet',
+                      maincontentText: getIframeHtml(this.url),
+                      width: 500
+                    });
+                  }
+                }
+              }
+           }
         },
         series: [{
             name: 'Negative',

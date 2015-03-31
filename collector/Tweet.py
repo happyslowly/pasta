@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import json
 import logging
+import urllib
 
 logger = logging.getLogger('TweetCollector')
 
@@ -9,11 +10,13 @@ db = client.pasta
 collection = db.tweets
 
 class Tweet:
-    def __init__(self, id, created_ts, content, sentiment='pos'):
+    def __init__(self, id, created_ts, content, user, sentiment='pos'):
         self.id = id
         self.created_ts = created_ts
         self.content = content
         self.sentiment = sentiment
+        self.user = user
+        self.url = urllib.quote('https://twitter.com/' + user + '/status/' + id)
         self.count = 0
 
     

@@ -13,7 +13,8 @@ var tweetSchema = new mongoose.Schema({
   id: String,
   created_ts: Number,
   content: String,
-  sentiment: String
+  sentiment: String,
+  url: String
 });
 var Tweet = mongoose.model('tweets', tweetSchema);
 
@@ -34,7 +35,8 @@ router.get('/tweets', function(req, res, next) {
         id: docs[i].id,
         content: docs[i].content,
         created_ts: docs[i].created_ts * 1000,
-        sentiment: docs[i].sentiment
+        sentiment: docs[i].sentiment,
+        url: docs[i].url
       });
     }
     res.json(result);
