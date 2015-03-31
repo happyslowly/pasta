@@ -8,7 +8,7 @@ window.setInterval(getTweets, refreshRate);
 
 function normalizeTimeStamp(unixTs) {
   var date = new Date(unixTs - tzOffset);
-  return date.toDateString() + ' ' + date.toTimeString();
+  return date.toDateString() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 }
 
 function getTweets() {
