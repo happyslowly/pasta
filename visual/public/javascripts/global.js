@@ -6,9 +6,16 @@ var tzOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 window.setInterval(getTweets, refreshRate);
 
+function appendZero(number) {
+  return ((number < 10) ? '0' : '') + number.toString();
+}
+
 function normalizeTimeStamp(unixTs) {
   var date = new Date(unixTs - tzOffset);
-  return date.toDateString() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+  return date.toDateString() + ' ' + 
+    appendZero(date.getHours()) + ':' + 
+    appendZero(date.getMinutes()) + ':' + 
+    appendZero(date.getSeconds());
 }
 
 function getTweets() {
