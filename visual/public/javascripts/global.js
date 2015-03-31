@@ -93,7 +93,7 @@ $(function () {
             text: 'PayPal Sentiments'
         },
         subtitle: {
-            text: 'See what peopel are tweeting about PayPal in latest 10 minutes'
+            text: 'See what peopel are tweeting about PayPal in last 10 minutes'
         },
         xAxis: {
             reversed: true,
