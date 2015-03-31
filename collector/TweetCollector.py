@@ -27,7 +27,7 @@ class TweetCollector(object):
         sequence = 0
         while True:
             try:
-                self.query_tweets(query)
+                self.query_tweets(query, sequence)
                 sequence = sequence + 1
                 time.sleep(wait)
             except twitter.TwitterHTTPError, e:
