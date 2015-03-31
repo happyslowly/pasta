@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var tzOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/pasta', function (error) {
@@ -10,7 +11,7 @@ mongoose.connect('mongodb://localhost/pasta', function (error) {
 
 var tweetSchema = new mongoose.Schema({
   id: String,
-  created_ts: String,
+  created_ts: Number,
   content: String,
   sentiment: String
 });
@@ -24,23 +25,17 @@ router.get('/', function(req, res, next) {
 /* GET tweets */
 router.get('/tweets', function(req, res, next) {
   var offset = req.query.offset * 1000 * 60;
-  var currentTs = new Date().getTime() - 7 * 60 * 60 * 1000;
-  Tweet.find({}, function(err, docs) {
+  var currentTs = new Date().getTime() + tzOffset;
+  
+  Tweet.find({'created_ts': {$gte: (currentTs - offset)/1000}}, function(err, docs) {
     result = new Array();
-
     for (var i = 0; i < docs.length; i++) {
-      var plot_ts = normalizeTs(docs[i].created_ts);
-      console.log(currentTs);
-      console.log(plot_ts);
-      if (currentTs - plot_ts <= offset) {
-        result.push({
-          id: docs[i].id,
-          content: docs[i].content,
-          plot_ts: normalizeTs(docs[i].created_ts),
-          created_ts: docs[i].created_ts,
-          sentiment: docs[i].sentiment
-        });
-      }
+      result.push({
+        id: docs[i].id,
+        content: docs[i].content,
+        created_ts: docs[i].created_ts * 1000,
+        sentiment: docs[i].sentiment
+      });
     }
     res.json(result);
   });

@@ -3,22 +3,15 @@
 
 __author__ = 'xixu'
 import twitter
-import argparse
-import argcomplete
 import sys
 import time
 import logging
 import urllib
 
 from conf import config
-from TweetCollector import TweetCollector
+from collector import TweetCollector
 
 logger = logging.getLogger('collect-paypal')
-
-parser = argparse.ArgumentParser(description='Collect PayPal tweets', usage='python collect-paypal.py')
-args = parser.parse_args()
-
-argcomplete.autocomplete(parser)
 
 try:
     query = '+OR+'.join([urllib.quote(kw, '') for kw in config.keywords])

@@ -1,9 +1,15 @@
 var offset = 10;
 var chart;
 var keep = 1 * 10 * 1000;
+var refreshRate = 5000;
+var tzOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
+window.setInterval(getTweets, refreshRate);
 
-window.setInterval(getTweets, 10000);
+function normalizeTimeStamp(unixTs) {
+  var date = new Date(unixTs - tzOffset);
+  return date.toDateString() + ' ' + date.toTimeString();
+}
 
 function getTweets() {
     $.get("/tweets?offset=" + offset, function(data) {
@@ -17,36 +23,36 @@ function getTweets() {
         //console.log(value);
 
         if (value['sentiment'] == 'pos') {
-          if (posLastTs != value['plot_ts']) {
+          if (posLastTs != value['created_ts']) {
             posY = step;
           } else {
             posY += step;
           }
 
-          posLastTs = value['plot_ts'];
+          posLastTs = value['created_ts'];
 
           var point = {
-            x: value['plot_ts'],
+            x: value['created_ts'],
             y: posY,
-            ts: value['created_ts'],
+            ts: normalizeTimeStamp(value['created_ts']),
             text: value['content']
           };
           posSeries.push(point);
         }
 
         if (value['sentiment'] == 'neg') {
-          if (negLastTs != value['plot_ts']) {
+          if (negLastTs != value['created_ts']) {
             negY = -1 * step;
           } else {
             negY -= step;
           }
 
-          negLastTs = value['plot_ts'];
+          negLastTs = value['created_ts'];
 
           var point = {
-            x: value['plot_ts'],
+            x: value['created_ts'],
             y: negY,
-            ts: value['created_ts'],
+            ts: normalizeTimeStamp(value['created_ts']),
             text: value['content']
           };
           negSeries.push(point);
@@ -69,6 +75,9 @@ $(function () {
 
     $(document).ready(function() {
       chart = new Highcharts.Chart({
+        credits: {
+          enabled: false  
+        },
         chart: {
             renderTo: 'chart',
             type: 'scatter',
@@ -77,7 +86,7 @@ $(function () {
             text: 'PayPal Sentiments'
         },
         subtitle: {
-            text: 'Source: Real time twitter feed'
+            text: 'See what peopel are tweeting about PayPal in latest 10 minutes'
         },
         xAxis: {
             reversed: true,
