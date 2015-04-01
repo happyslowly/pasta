@@ -14,13 +14,16 @@ var tweetSchema = new mongoose.Schema({
   created_ts: Number,
   content: String,
   sentiment: String,
-  url: String
+  html: String
 });
 var Tweet = mongoose.model('tweets', tweetSchema);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Pasta' });
+  res.render('index', { 
+	  title: 'Pasta',
+	  mailto: 'xixu@paypal.com'
+  })
 });
 
 /* GET tweets */
@@ -36,7 +39,7 @@ router.get('/tweets', function(req, res, next) {
         content: docs[i].content,
         created_ts: docs[i].created_ts * 1000,
         sentiment: docs[i].sentiment,
-        url: docs[i].url
+        html: docs[i].html
       });
     }
     res.json(result);

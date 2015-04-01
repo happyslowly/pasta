@@ -6,8 +6,9 @@ var tzOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
 window.setInterval(getTweets, refreshRate);
 
-function getIframeHtml(url) {
-  return '<iframe border=0 frameborder=0 height=250 width=550 src="http://twitframe.com/show?url=' + url + '"></iframe>'
+function getIframeHtml(html) {
+  console.log('<iframe border=0 frameborder=0 height=250 width=550>' + html + '</iframe>');
+  return '<iframe border=0 frameborder=0 height=250 width=550>' + html + '</iframe>';
 }
 
 function appendZero(number) {
@@ -33,8 +34,6 @@ function getTweets() {
       var posLastTs, negLastTs, posY, negY
 
       $.each(data, function(index, value) {
-        //console.log(value);
-
         if (value['sentiment'] == 'pos') {
           if (posLastTs != value['created_ts']) {
             posY = step;
@@ -49,7 +48,7 @@ function getTweets() {
             y: posY,
             ts: normalizeTimeStamp(value['created_ts']),
             text: value['content'],
-            url: value['url'],
+            html: value['html'],
           };
           posSeries.push(point);
         }
@@ -68,7 +67,7 @@ function getTweets() {
             y: negY,
             ts: normalizeTimeStamp(value['created_ts']),
             text: value['content'],
-            url: value['url']
+            html: value['html']
           };
           negSeries.push(point);
         }
@@ -101,7 +100,7 @@ $(function () {
             text: 'PayPal Sentiments'
         },
         subtitle: {
-            text: 'See what peopel are tweeting about PayPal in last 10 minutes'
+            text: 'See what people are tweeting about PayPal in last 10 minutes'
         },
         xAxis: {
             reversed: true,
@@ -154,8 +153,8 @@ $(function () {
                     }
                 },
                 tooltip: {
-                    headerFormat: '<b>{series.name}</b><br>',
-                    pointFormat: '{point.ts} {point.text}'
+                    headerFormat: '',
+                    pointFormat: '<b>{point.ts}</b>, {point.text}'
                 }
             },
             series: {
@@ -170,7 +169,7 @@ $(function () {
                         y: e.pageY || e.clientY
                       },
                       headingText: 'Tweet',
-                      maincontentText: getIframeHtml(this.url),
+                      maincontentText: this.html,
                       width: 500
                     });
                   }

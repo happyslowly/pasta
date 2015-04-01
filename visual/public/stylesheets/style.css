@@ -3,6 +3,17 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+body span {
+  font-weight: bold;
+}
+
+#cheetsheet {
+	margin-top: 80px;
+}
+
 a {
   color: #00B7FF;
+  float: right;
+  text-decoration: none;
 }
+

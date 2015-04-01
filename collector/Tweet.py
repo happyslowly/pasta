@@ -11,13 +11,13 @@ db = client.pasta
 collection = db.tweets
 
 class Tweet:
-    def __init__(self, _id, created_ts, content, user, sentiment='pos'):
+    def __init__(self, _id, created_ts, content, user, html, sentiment='pos'):
         self.id = _id
         self.created_ts = created_ts
         self.content = content
         self.sentiment = sentiment
         self.user = user
-        self.url = urllib.quote('https://twitter.com/' + user + '/status/' + _id)
+        self.html = html
         self.count = 0
 
     
