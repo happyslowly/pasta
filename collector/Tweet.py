@@ -17,7 +17,7 @@ class Tweet:
         self.content = content
         self.sentiment = sentiment
         self.user = user
-        self.url = urllib.quote('https://twitter.com/' + user + '/status/' + id)
+        self.url = urllib.quote('https://twitter.com/' + user + '/status/' + _id)
         self.count = 0
 
     

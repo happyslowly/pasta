@@ -60,7 +60,7 @@ class TweetCollector(object):
                 continue
             
             if since_id == 0 or since_id < _tweet['id']: since_id = _tweet['id']
-            
+           
             tweet = Tweet(str(_tweet['id']),
                           int(time.mktime(time.strptime(_tweet['created_at'], ts_format))),
                           _tweet['text'], _tweet['user']['screen_name'],
