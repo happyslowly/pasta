@@ -22,7 +22,7 @@ var Tweet = mongoose.model('tweets', tweetSchema);
 router.get('/', function(req, res, next) {
   res.render('index', { 
 	  title: 'Pasta',
-	  mailto: 'xixu@paypal.com'
+	  mailto: 'DL-PP-RISK-GRS-PASTA@corp.ebay.com'
   })
 });
 
