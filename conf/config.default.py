@@ -29,3 +29,6 @@ keywords = [
 logging.basicConfig(level=logging.INFO, format='%(name)s: %(levelname)s %(message)s')
 
 interval = 5
+
+mongo_host = 'localhost'
+mongo_port = 27017

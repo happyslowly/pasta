@@ -1,7 +1,4 @@
 import os.path
-import re, math, collections, itertools
-import random, csv, sys
-import nltk, nltk.classify.util, nltk.metrics
 from nltk.classify import NaiveBayesClassifier
 import json
 
@@ -15,10 +12,11 @@ negfeats = []
 
 def word_feats(words):
     return dict([(word, True) for word in words])
-	
+
+
 with open(posfeats_file, 'r') as f:
-	posfeats=json.loads(f.readline())
-		
+    posfeats=json.loads(f.readline())
+
 with open(negfeats_file, 'r') as f:
     negfeats=json.loads(f.readline())
 
@@ -26,19 +24,13 @@ with open(negfeats_file, 'r') as f:
 negcutoff = len(negfeats)*6/7
 poscutoff = len(posfeats)*6/7
 
-#trainfeats = negfeats[:negcutoff] + posfeats[:poscutoff]
 trainfeats = negfeats[:negcutoff] + posfeats[:poscutoff]
 testfeats = negfeats[negcutoff:] + posfeats[poscutoff:]
-
-#print trainfeats
-print 'train on %d instances, test on %d instances' % (len(trainfeats), len(testfeats))
 
 #The function call to train the data
 
 classifier = NaiveBayesClassifier.train(trainfeats)
 classifier.show_most_informative_features(10)
-#print(nltk.classify.accuracy(classifier, testfeats))
-
 
 def get_sentiment(raw):
     tweetWords=[]

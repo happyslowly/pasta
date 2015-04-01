@@ -2,3 +2,5 @@
 .idea/
 conf/config.py
 .DS_Store
+.project
+.pydevproject

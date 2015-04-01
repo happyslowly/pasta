@@ -2,14 +2,10 @@ import logging
 import time
 import re
 import twitter
-import dateutil.parser
 
-from sentiment import sa
 from conf import config
 from Tweet import Tweet
 from sentiment import sa
-
-from conf import config
 
 logger = logging.getLogger('TweetCollector')
 
@@ -21,6 +17,7 @@ class TweetCollector(object):
                                   config.twitter_oauth_custkey, config.twitter_oauth_custsecret)
         logger.info('Connecting to twitter api')
         self.api = twitter.Twitter(auth=self.auth)
+        self.sequence = 0
 
 
     def run(self, query, wait=config.interval):
@@ -37,16 +34,19 @@ class TweetCollector(object):
             except TweetCollectorTimeoutException, e:
                 logger.warn(e.message)
                 time.sleep(wait)
+                
+            except ValueError, e:
+                logger.warn(e.message)
+                sequence = 0 # reset sequence to zero to bypass error record
+                time.sleep(wait)
 
 
     def query_tweets(self, query, sequence=0):
         logger.info('Searching: %s' % query)
-        max_id = 0
         since_id = 0
         if sequence == 0:
             search_results = self.api.search.tweets(q=query, count=100, result_type='recent')
         else:
-            #search_results = self.api.search.tweets(q=query, count=100, max_id=max_id-1)
             search_results = self.api.search.tweets(q=query, count=100, since_id=since_id)
 
         statuses = search_results['statuses']
@@ -59,7 +59,6 @@ class TweetCollector(object):
             if not self.is_tweet_valid(_tweet):
                 continue
             
-            if max_id == 0 or max_id > _tweet['id']: max_id = _tweet['id']
             if since_id == 0 or since_id < _tweet['id']: since_id = _tweet['id']
             
             tweet = Tweet(str(_tweet['id']),

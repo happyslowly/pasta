@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# PYTHON_ARGCOMPLETE_OK
 
-__author__ = 'xixu'
 import twitter
 import sys
 import time

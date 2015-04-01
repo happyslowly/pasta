@@ -1,17 +1,18 @@
 from pymongo import MongoClient
-import json
 import logging
 import urllib
 
+from conf import config
+
 logger = logging.getLogger('TweetCollector')
 
-client = MongoClient('localhost', 27017)
+client = MongoClient(config.mongo_host, config.mongo_port)
 db = client.pasta
 collection = db.tweets
 
 class Tweet:
-    def __init__(self, id, created_ts, content, user, sentiment='pos'):
-        self.id = id
+    def __init__(self, _id, created_ts, content, user, sentiment='pos'):
+        self.id = _id
         self.created_ts = created_ts
         self.content = content
         self.sentiment = sentiment
