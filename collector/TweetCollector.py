@@ -44,10 +44,13 @@ class TweetCollector(object):
     def query_tweets(self, query, sequence=0):
         logger.info('Searching: %s' % query)
         since_id = 0
-        if sequence == 0:
-            search_results = self.api.search.tweets(q=query, count=100, result_type='recent')
-        else:
-            search_results = self.api.search.tweets(q=query, count=100, since_id=since_id)
+        try:
+          if sequence == 0:
+              search_results = self.api.search.tweets(q=query, count=100, result_type='recent')
+          else:
+              search_results = self.api.search.tweets(q=query, count=100, since_id=since_id)
+        except:
+          return
 
         statuses = search_results['statuses']
 
